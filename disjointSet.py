@@ -1,3 +1,7 @@
+import random
+import time
+import sys 
+
 class No(object):
     def __init__(self, valor):
         self.pai = self
@@ -47,7 +51,7 @@ def findWithPathCompression(no):
         no.pai = findWithPathCompression(no.pai)
      return no.pai
 
-def unionWithPathCompression():
+def unionWithPathCompression(no1, no2):
     raiz1 = findWithPathCompression(no1)
     raiz2 = findWithPathCompression(no2)
     raiz1.pai = raiz2
@@ -66,9 +70,41 @@ def unionByRankPathCompression(no1, no2):
     elif raiz1.rank < raiz2.rank:
         raiz1.pai = raiz2
 
+def test_unions(nos, reps, union_f):                 
+     accum = 0                           
+     for i in xrange(reps):              
+         a = random.randint(0, len(nos) - 1)
+         b = random.randint(0, len(nos) - 1)
+         while a == b:
+             b = random.randint(0, len(nos) - 1)
+         no_a = nos[a]
+         no_b = nos[b]
+         start = time.time()
+         union_f(no_a, no_b)
+         end = time.time()
+         accum += end - start
+     return accum
+
 if __name__ == "__main__":
-    nos = criaNos([1,2,3])
-        
-    noNovo = criaNo(10,nos[1])
-    noNovo2 = criaNo(11, noNovo)
+    sys.setrecursionlimit(100000) 
+    print "Total de nos gerados para cada caso: 1000000"
+    
+    print "----- Criando arestas aleatorias entre os nos gerados com 550000 repeticoes -----"
+    nos = criaNos(range(1000000))
+    print "Tempo do union: %02f" % test_unions(nos, 550000, union) 
+    nos = criaNos(range(1000000))
+    print "Tempo do unionByRank: %02f" % test_unions(nos, 550000, unionByRank) 
+    nos = criaNos(range(1000000))
+    print "Tempo do unionWithPathCompression: %02f" % test_unions(nos, 550000, unionWithPathCompression) 
+    nos = criaNos(range(1000000))
+    print "Tempo do unionByRankWithPathCompression: %02f" % test_unions(nos, 550000, unionByRankPathCompression)
+
+    print "----- Criando arestas aleatorias entre os nos gerados com 1000000 repeticoes -----"
+    print "Tempo do union: infinito"
+    nos = criaNos(range(1000000))
+    print "Tempo do unionByRank: %02f" % test_unions(nos, 1000000, unionByRank) 
+    nos = criaNos(range(1000000))
+    print "Tempo do unionWithPathCompression: %02f" % test_unions(nos, 1000000, unionWithPathCompression) 
+    nos = criaNos(range(1000000))
+    print "Tempo do unionByRankWithPathCompression: %02f" % test_unions(nos, 1000000, unionByRankPathCompression)
     
